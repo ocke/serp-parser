@@ -20,7 +20,7 @@ import {
 } from './models';
 import * as utils from './utils';
 
-export class GoogleSERP {
+export class BingSERP {
   public serp: Serp = {
     currentPage: 1,
     keyword: '',

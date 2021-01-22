@@ -1,20 +1,20 @@
 import * as fs from 'fs-extra';
-import { GoogleSERP } from './index';
+import { BingSERP } from './index';
 import { Ad, Serp } from './models';
 
-const root = 'test/google/desktop/';
+const root = 'test/bing/desktop/';
 
-test('GoogleSERP should return empty organic array on empty html string', () => {
-  expect(new GoogleSERP('').serp.organic).toEqual([]);
+test('BingSERP should return empty organic array on empty html string', () => {
+  expect(new BingSERP('').serp.organic).toEqual([]);
 });
 
-describe('Parsing Google page with 10 resuts', () => {
+describe('Parsing Bing page with 10 resuts', () => {
   let html: string;
   let serp: Serp;
 
   beforeAll(() => {
-    html = fs.readFileSync(`${root}google.html`, { encoding: 'utf8' });
-    serp = new GoogleSERP(html).serp;
+    html = fs.readFileSync(`${root}bing.html`, { encoding: 'utf8' });
+    serp = new BingSERP(html).serp;
   });
 
   test('Page should have 10,230,000,000 results', () => {
@@ -29,17 +29,17 @@ describe('Parsing Google page with 10 resuts', () => {
   test('Page should have 8 related keywords', () => {
     expect(serp.relatedKeywords).toHaveLength(8);
   });
-  test('1st related keyword should be "google account"', () => {
-    expect(serp.relatedKeywords[0].keyword).toBe('google account');
+  test('1st related keyword should be "bing account"', () => {
+    expect(serp.relatedKeywords[0].keyword).toBe('bing account');
   });
   test('1st related keyword should have path', () => {
     expect(serp.relatedKeywords[0].path).toBe(
-      '/search?q=google+account&sa=X&ved=2ahUKEwj9jtai65_sAhVGQBoKHahaA0IQ1QIoAHoECCgQAQ',
+      '/search?q=bing+account&sa=X&ved=2ahUKEwj9jtai65_sAhVGQBoKHahaA0IQ1QIoAHoECCgQAQ',
     );
   });
   test(`Link to 2nd page should have path`, () => {
     expect(serp.pagination[1].path).toBe(
-      '/search?q=google&ei=nVF8X73MDsaAaai1jZAE&start=10&sa=N&ved=2ahUKEwj9jtai65_sAhVGQBoKHahaA0IQ8tMDegQIJxAv',
+      '/search?q=bing&ei=nVF8X73MDsaAaai1jZAE&start=10&sa=N&ved=2ahUKEwj9jtai65_sAhVGQBoKHahaA0IQ8tMDegQIJxAv',
     );
   });
 
@@ -47,41 +47,41 @@ describe('Parsing Google page with 10 resuts', () => {
     expect(serp.organic).toHaveLength(6);
   });
 
-  test('4th result should have url https://blog.google/', () => {
-    expect(serp.organic[3].url).toBe('https://blog.google/');
+  test('4th result should have url https://blog.bing/', () => {
+    expect(serp.organic[3].url).toBe('https://blog.bing/');
   });
 
   test(`1st result should have cachedUrl`, () => {
     expect(serp.organic[0].cachedUrl).toBe(
-      'https://webcache.googleusercontent.com/search?q=cache:y14FcUQOGl4J:https://www.google.com/+&cd=1&hl=en&ct=clnk&gl=us',
+      'https://webcache.bingusercontent.com/search?q=cache:y14FcUQOGl4J:https://www.bing.com/+&cd=1&hl=en&ct=clnk&gl=us',
     );
   });
   test(`1st result should have similarUrl`, () => {
     expect(serp.organic[0].similarUrl).toBe(
-      '/search?q=related:https://www.google.com/+google&sa=X&ved=2ahUKEwj9jtai65_sAhVGQBoKHahaA0IQHzAAegQIARAH',
+      '/search?q=related:https://www.bing.com/+bing&sa=X&ved=2ahUKEwj9jtai65_sAhVGQBoKHahaA0IQHzAAegQIARAH',
     );
   });
 
-  test('4th result should have domain blog.google', () => {
-    expect(serp.organic[3].domain).toBe('blog.google');
+  test('4th result should have domain blog.bing', () => {
+    expect(serp.organic[3].domain).toBe('blog.bing');
   });
 
-  test('4th result should have title "The Keyword | Google"', () => {
-    expect(serp.organic[3].title).toBe('The Keyword | Google');
+  test('4th result should have title "The Keyword | Bing"', () => {
+    expect(serp.organic[3].title).toBe('The Keyword | Bing');
   });
 
   test('4th result should have snippet to start with "Discover all the latest about our products...', () => {
     expect(serp.organic[3].snippet).toBe(
-      `Discover all the latest about our products, technology, and Google culture on our official blog.`,
+      `Discover all the latest about our products, technology, and Bing culture on our official blog.`,
     );
   });
 
   test('1st result should have card sitelinks', () => {
     expect(serp).toHaveProperty(['organic', 0, 'sitelinks', 0, 'title'], 'Account');
-    expect(serp).toHaveProperty(['organic', 0, 'sitelinks', 0, 'href'], 'https://www.google.com/account/about/');
+    expect(serp).toHaveProperty(['organic', 0, 'sitelinks', 0, 'href'], 'https://www.bing.com/account/about/');
     expect(serp).toHaveProperty(
       ['organic', 0, 'sitelinks', 0, 'snippet'],
-      'In your Google Account, you can see and manage your info ...',
+      'In your Bing Account, you can see and manage your info ...',
     );
     expect(serp).toHaveProperty(['organic', 0, 'sitelinks', 0, 'type'], 'CARD');
   });
@@ -106,39 +106,39 @@ describe('Parsing Google page with 10 resuts', () => {
   });
 });
 
-describe('Parsing Google page with 100 results', () => {
+describe('Parsing Bing page with 100 results', () => {
   let html: string;
   let serp: Serp;
 
   beforeAll(() => {
-    html = fs.readFileSync(`${root}google-100.html`, { encoding: 'utf8' });
-    serp = new GoogleSERP(html).serp;
+    html = fs.readFileSync(`${root}bing-100.html`, { encoding: 'utf8' });
+    serp = new BingSERP(html).serp;
   });
 
   test('serp should have 100 results', () => {
     expect(serp.organic).toHaveLength(100);
   });
 
-  test('all results should have domain domains.google', () => {
+  test('all results should have domain domains.bing', () => {
     expect(serp.organic.filter((x) => x.domain === '')).toEqual([]);
   });
 
-  test('3rd result should have url https://www.google.com/account/about/', () => {
-    expect(serp.organic[2].url).toBe('https://www.google.com/account/about/');
+  test('3rd result should have url https://www.bing.com/account/about/', () => {
+    expect(serp.organic[2].url).toBe('https://www.bing.com/account/about/');
   });
 
-  test('3rd result should have title "Google Account"', () => {
-    expect(serp.organic[2].title).toBe('Google Account');
+  test('3rd result should have title "Bing Account"', () => {
+    expect(serp.organic[2].title).toBe('Bing Account');
   });
 
-  test('3rd result should have snippet to start with "In your Google Account, you can see ...', () => {
+  test('3rd result should have snippet to start with "In your Bing Account, you can see ...', () => {
     expect(serp.organic[2].snippet).toBe(
-      `In your Google Account, you can see and manage your info, activity, security&nbsp;...`,
+      `In your Bing Account, you can see and manage your info, activity, security&nbsp;...`,
     );
   });
 
-  test('Keyword should be google', () => {
-    expect(serp.keyword).toBe('google');
+  test('Keyword should be bing', () => {
+    expect(serp.keyword).toBe('bing');
   });
 });
 
@@ -148,7 +148,7 @@ describe('Parsing "The Matrix" search page', () => {
 
   beforeAll(() => {
     html = fs.readFileSync(`${root}matrix.html`, { encoding: 'utf8' });
-    serp = new GoogleSERP(html).serp;
+    serp = new BingSERP(html).serp;
   });
 
   test('serp should have 9 results', () => {
@@ -208,7 +208,7 @@ describe('Parsing Hotels search page', () => {
 
   beforeAll(() => {
     html = fs.readFileSync(`${root}hotels.html`, { encoding: 'utf8' });
-    serp = new GoogleSERP(html).serp;
+    serp = new BingSERP(html).serp;
   });
 
   test('There should be 1300 similar hotels in the area', () => {
@@ -314,7 +314,7 @@ describe('Parsing Hotels search page', () => {
       expect(serp).toHaveProperty(['adwords', 'adwordsTop', 1, 'sitelinks', 1, 'title'], 'Book for Tonight');
       expect(serp).toHaveProperty(
         ['adwords', 'adwordsTop', 1, 'sitelinks', 1, 'href'],
-        'https://www.google.com/aclk?sa=l&ai=DChcSEwiA7-O9h6_sAhVpCIgJHTzzDPcYABAFGgJxbg&sig=AOD64_0hx2qloY4Q2WqN1a2KcdqXsCe7jg&rct=j&q=&ved=2ahUKEwiF4Ny9h6_sAhXopnIEHT_OBlMQpigoAXoECCEQFA&adurl=',
+        'https://www.bing.com/aclk?sa=l&ai=DChcSEwiA7-O9h6_sAhVpCIgJHTzzDPcYABAFGgJxbg&sig=AOD64_0hx2qloY4Q2WqN1a2KcdqXsCe7jg&rct=j&q=&ved=2ahUKEwiF4Ny9h6_sAhXopnIEHT_OBlMQpigoAXoECCEQFA&adurl=',
       );
       expect(serp).toHaveProperty(['adwords', 'adwordsTop', 1, 'sitelinks', 1, 'type'], 'INLINE');
     });
@@ -346,7 +346,7 @@ xdescribe('Parsing Hotels-London search page', () => {
 
   beforeAll(() => {
     html = fs.readFileSync(`${root}hotels-london.html`, { encoding: 'utf8' });
-    serp = new GoogleSERP(html).serp;
+    serp = new BingSERP(html).serp;
   });
 
   xtest('Second featured hotel should have originalPrice property and should have value 113', () => {
@@ -373,7 +373,7 @@ describe('Testing functions', () => {
   let serp: Serp;
 
   beforeAll(() => {
-    serp = new GoogleSERP('<body class="srp"><div></div></body>').serp;
+    serp = new BingSERP('<body class="srp"><div></div></body>').serp;
   });
 
   test('testing getResults and getTime function for non existent results', () => {
@@ -392,7 +392,7 @@ describe('Parsing Domain page', () => {
 
   beforeAll(() => {
     html = fs.readFileSync(`${root}domain.html`, { encoding: 'utf8' });
-    serp = new GoogleSERP(html).serp;
+    serp = new BingSERP(html).serp;
   });
 
   describe('Testing ads', () => {
@@ -429,7 +429,7 @@ describe('Parsing Domain page', () => {
       expect(serp).toHaveProperty(['adwords', 'adwordsTop', 0, 'sitelinks', 1, 'title'], '$1.99 Professional Email');
       expect(serp).toHaveProperty(
         ['adwords', 'adwordsTop', 0, 'sitelinks', 1, 'href'],
-        'https://www.googleadservices.com/pagead/aclk?sa=L&ai=DChcSEwjZjMzZiq3sAhVxPa0GHY6MD3gYABAOGgJwdg&ggladgrp=7066528666257623986&gglcreat=1209075016982593652&ohost=www.google.com&cid=CAASEuRoOUMv0LYpTSUmDlTUL-AuLA&sig=AOD64_0AhqAQShl5WGdfz_MHVtJQuFz9fQ&q=&ved=2ahUKEwjv78XZiq3sAhXFjp4KHabTB4QQqyQoAXoECCAQFA&adurl=',
+        'https://www.bingadservices.com/pagead/aclk?sa=L&ai=DChcSEwjZjMzZiq3sAhVxPa0GHY6MD3gYABAOGgJwdg&ggladgrp=7066528666257623986&gglcreat=1209075016982593652&ohost=www.bing.com&cid=CAASEuRoOUMv0LYpTSUmDlTUL-AuLA&sig=AOD64_0AhqAQShl5WGdfz_MHVtJQuFz9fQ&q=&ved=2ahUKEwjv78XZiq3sAhXFjp4KHabTB4QQqyQoAXoECCAQFA&adurl=',
       );
       expect(serp).toHaveProperty(
         ['adwords', 'adwordsTop', 0, 'sitelinks', 1, 'snippet'],
@@ -443,7 +443,7 @@ describe('Parsing Domain page', () => {
       expect(serp).toHaveProperty(['adwords', 'adwordsTop', 1, 'sitelinks', 1, 'title'], 'Website Templates');
       expect(serp).toHaveProperty(
         ['adwords', 'adwordsTop', 1, 'sitelinks', 1, 'href'],
-        'https://www.googleadservices.com/pagead/aclk?sa=L&ai=DChcSEwjZjMzZiq3sAhVxPa0GHY6MD3gYABAFGgJwdg&ae=2&ohost=www.google.com&cid=CAASEuRoOUMv0LYpTSUmDlTUL-AuLA&sig=AOD64_1g0V9TDulFD6DL-HKhZhBUXJLKPw&q=&ved=2ahUKEwjv78XZiq3sAhXFjp4KHabTB4QQpigoAXoECB8QEg&adurl=',
+        'https://www.bingadservices.com/pagead/aclk?sa=L&ai=DChcSEwjZjMzZiq3sAhVxPa0GHY6MD3gYABAFGgJwdg&ae=2&ohost=www.bing.com&cid=CAASEuRoOUMv0LYpTSUmDlTUL-AuLA&sig=AOD64_1g0V9TDulFD6DL-HKhZhBUXJLKPw&q=&ved=2ahUKEwjv78XZiq3sAhXFjp4KHabTB4QQpigoAXoECB8QEg&adurl=',
       );
       expect(serp).toHaveProperty(['adwords', 'adwordsTop', 1, 'sitelinks', 1, 'type'], 'INLINE');
     });
@@ -473,7 +473,7 @@ xdescribe('Parsing Paris page', () => {
 
   beforeAll(() => {
     html = fs.readFileSync(`${root}paris.html`, { encoding: 'utf8' });
-    serp = new GoogleSERP(html).serp;
+    serp = new BingSERP(html).serp;
   });
 
   describe('Testing ads', () => {
@@ -497,7 +497,7 @@ xdescribe('Parsing Paris page', () => {
         ['adwords', 'adwordsTop', 0, 'url'],
         '/aclk?sa=l&ai=DChcSEwidtOmvrb_nAhXX-FEKHbj0DbIYABAAGgJ3cw&sig=AOD64_30sqttmnoUUIsmjWZ1SV9X-Odg0w&adurl=&q=',
       );
-      expect(serp).toHaveProperty(['adwords', 'adwordsTop', 0, 'domain'], 'www.googleadservices.com');
+      expect(serp).toHaveProperty(['adwords', 'adwordsTop', 0, 'domain'], 'www.bingadservices.com');
       expect(serp).toHaveProperty(
         ['adwords', 'adwordsTop', 0, 'snippet'],
         `Search for Rentals with Airbnb. Book Online with Instant Confirmation! Over 6 Million Listings. 100,000 Cities. 191 Countries. 24/7 Customer Service. Best Prices. Superb Locations. Amenities: Business Travel Ready, Family Friendly, Pet Friendly.`,
@@ -523,7 +523,7 @@ describe('Parsing .com-domains page', () => {
 
   beforeAll(() => {
     html = fs.readFileSync(`${root}_com-domains.html`, { encoding: 'utf8' });
-    serp = new GoogleSERP(html).serp;
+    serp = new BingSERP(html).serp;
   });
 
   test('There should be all ads', () => {
@@ -537,7 +537,7 @@ describe('Parsing .com-domains page', () => {
     expect(serp).toHaveProperty(['adwords', 'adwordsBottom', 2, 'sitelinks', 1, 'title'], 'Pick Your Plan');
     expect(serp).toHaveProperty(
       ['adwords', 'adwordsBottom', 2, 'sitelinks', 1, 'href'],
-      'https://www.googleadservices.com/pagead/aclk?sa=L&ai=DChcSEwim47HPv7fsAhUWPmAKHeUTAqgYABAUGgJ0bQ&ohost=www.google.com&cid=CAASEuRoekkJ8_7KALOXeRdsBBNG8w&sig=AOD64_1U10eN9pFCwcAtcP-rYX4G9S_W7A&q=&ved=2ahUKEwj776rPv7fsAhXz7HMBHeCKBxwQpigoAXoECA0QEg&adurl=',
+      'https://www.bingadservices.com/pagead/aclk?sa=L&ai=DChcSEwim47HPv7fsAhUWPmAKHeUTAqgYABAUGgJ0bQ&ohost=www.bing.com&cid=CAASEuRoekkJ8_7KALOXeRdsBBNG8w&sig=AOD64_1U10eN9pFCwcAtcP-rYX4G9S_W7A&q=&ved=2ahUKEwj776rPv7fsAhXz7HMBHeCKBxwQpigoAXoECA0QEg&adurl=',
     );
     expect(serp).toHaveProperty(['adwords', 'adwordsBottom', 2, 'sitelinks', 1, 'type'], 'INLINE');
   });
@@ -567,7 +567,7 @@ describe('Parsing Coffee page', () => {
 
   beforeAll(() => {
     html = fs.readFileSync(`${root}coffee.html`, { encoding: 'utf8' });
-    serp = new GoogleSERP(html).serp;
+    serp = new BingSERP(html).serp;
   });
 
   test('Page should have locals feature', () => {
@@ -593,7 +593,7 @@ describe('Parsing Dell page', () => {
 
   beforeAll(() => {
     html = fs.readFileSync(`${root}dell.html`, { encoding: 'utf8' });
-    serp = new GoogleSERP(html).serp;
+    serp = new BingSERP(html).serp;
   });
 
   test('Page should have shop feature', () => {
@@ -662,7 +662,7 @@ describe('Parsing no results page', () => {
 
   beforeAll(() => {
     html = fs.readFileSync(`${root}no-results.html`, { encoding: 'utf8' });
-    serp = new GoogleSERP(html).serp;
+    serp = new BingSERP(html).serp;
   });
 
   test('There should be 0 results', () => {
