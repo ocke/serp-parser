@@ -17,57 +17,43 @@ describe('Parsing Bing page with 10 resuts', () => {
     serp = new BingSERP(html).serp;
   });
 
-  test('Page should have 10,230,000,000 results', () => {
-    expect(serp.totalResults).toBe(10230000000);
-  });
-  test('Search should be done in 0.87 seconds', () => {
-    expect(serp.timeTaken).toBe(0.87);
+  test('Page should have 510,000,000 results', () => {
+    expect(serp.totalResults).toBe(510000000);
   });
   test('Current page should be 1', () => {
     expect(serp.currentPage).toBe(1);
   });
-  test('Page should have 8 related keywords', () => {
+  xtest('Page should have 8 related keywords', () => {
     expect(serp.relatedKeywords).toHaveLength(8);
   });
-  test('1st related keyword should be "bing account"', () => {
+  xtest('1st related keyword should be "bing account"', () => {
     expect(serp.relatedKeywords[0].keyword).toBe('bing account');
   });
-  test('1st related keyword should have path', () => {
+  xtest('1st related keyword should have path', () => {
     expect(serp.relatedKeywords[0].path).toBe(
       '/search?q=bing+account&sa=X&ved=2ahUKEwj9jtai65_sAhVGQBoKHahaA0IQ1QIoAHoECCgQAQ',
     );
   });
   test(`Link to 2nd page should have path`, () => {
     expect(serp.pagination[1].path).toBe(
-      '/search?q=bing&ei=nVF8X73MDsaAaai1jZAE&start=10&sa=N&ved=2ahUKEwj9jtai65_sAhVGQBoKHahaA0IQ8tMDegQIJxAv',
+      'https://www.bing.com/search?q=bing&go=Search&qs=ds&first=8&FORM=PERE',
     );
   });
 
-  test('serp should have 6 results', () => {
-    expect(serp.organic).toHaveLength(6);
+  test('serp should have 7 results', () => {
+    expect(serp.organic).toHaveLength(7);
   });
 
-  test('4th result should have url https://blog.bing/', () => {
-    expect(serp.organic[3].url).toBe('https://blog.bing/');
+  test('4th result should have url https://twitter.com/Bing', () => {
+    expect(serp.organic[3].url).toBe('https://twitter.com/Bing');
   });
 
-  test(`1st result should have cachedUrl`, () => {
-    expect(serp.organic[0].cachedUrl).toBe(
-      'https://webcache.bingusercontent.com/search?q=cache:y14FcUQOGl4J:https://www.bing.com/+&cd=1&hl=en&ct=clnk&gl=us',
-    );
-  });
-  test(`1st result should have similarUrl`, () => {
-    expect(serp.organic[0].similarUrl).toBe(
-      '/search?q=related:https://www.bing.com/+bing&sa=X&ved=2ahUKEwj9jtai65_sAhVGQBoKHahaA0IQHzAAegQIARAH',
-    );
+  test('4th result should have domain twitter.com', () => {
+    expect(serp.organic[3].domain).toBe('twitter.com');
   });
 
-  test('4th result should have domain blog.bing', () => {
-    expect(serp.organic[3].domain).toBe('blog.bing');
-  });
-
-  test('4th result should have title "The Keyword | Bing"', () => {
-    expect(serp.organic[3].title).toBe('The Keyword | Bing');
+  test('4th result should have title "Bing (@Bing) | Twitter"', () => {
+    expect(serp.organic[3].title).toBe('Bing (@Bing) | Twitter');
   });
 
   test('4th result should have snippet to start with "Discover all the latest about our products...', () => {
@@ -106,7 +92,7 @@ describe('Parsing Bing page with 10 resuts', () => {
   });
 });
 
-describe('Parsing Bing page with 100 results', () => {
+xdescribe('Parsing Bing page with 100 results', () => {
   let html: string;
   let serp: Serp;
 
@@ -142,7 +128,7 @@ describe('Parsing Bing page with 100 results', () => {
   });
 });
 
-describe('Parsing "The Matrix" search page', () => {
+xdescribe('Parsing "The Matrix" search page', () => {
   let html: string;
   let serp: Serp;
 
@@ -202,7 +188,7 @@ describe('Parsing "The Matrix" search page', () => {
   });
 });
 
-describe('Parsing Hotels search page', () => {
+xdescribe('Parsing Hotels search page', () => {
   let html: string;
   let serp: Serp;
 
@@ -283,7 +269,7 @@ describe('Parsing Hotels search page', () => {
     expect(serp).toHaveProperty(['hotels', 'hotels', 0, 'deal', 'dealDetails'], '37% less than usual');
   });
 
-  describe('Testing ads', () => {
+  xdescribe('Testing ads', () => {
     test('There should be top ads', () => {
       expect(serp.adwords).toBeDefined();
       expect(serp.adwords?.adwordsTop).toBeDefined();
@@ -320,7 +306,7 @@ describe('Parsing Hotels search page', () => {
     });
   });
 
-  describe('Testing top stories feature', () => {
+  xdescribe('Testing top stories feature', () => {
     test('Page should have topStories feature', () => {
       expect(serp.topStories).toBeDefined();
     });
@@ -369,7 +355,7 @@ xdescribe('Parsing Hotels-London search page', () => {
   });
 });
 
-describe('Testing functions', () => {
+xdescribe('Testing functions', () => {
   let serp: Serp;
 
   beforeAll(() => {
@@ -386,7 +372,7 @@ describe('Testing functions', () => {
   });
 });
 
-describe('Parsing Domain page', () => {
+xdescribe('Parsing Domain page', () => {
   let html: string;
   let serp: Serp;
 
@@ -395,7 +381,7 @@ describe('Parsing Domain page', () => {
     serp = new BingSERP(html).serp;
   });
 
-  describe('Testing ads', () => {
+  xdescribe('Testing ads', () => {
     test('There should be top ads', () => {
       expect(serp.adwords).toBeDefined();
       expect(serp.adwords?.adwordsTop).toBeDefined();
@@ -476,7 +462,7 @@ xdescribe('Parsing Paris page', () => {
     serp = new BingSERP(html).serp;
   });
 
-  describe('Testing ads', () => {
+  xdescribe('Testing ads', () => {
     test('There should be top ads', () => {
       expect(serp.adwords).toBeDefined();
       expect(serp.adwords?.adwordsTop).toBeDefined();
@@ -517,7 +503,7 @@ xdescribe('Parsing Paris page', () => {
   });
 });
 
-describe('Parsing .com-domains page', () => {
+xdescribe('Parsing .com-domains page', () => {
   let html: string;
   let serp: Serp;
 
@@ -561,7 +547,7 @@ describe('Parsing .com-domains page', () => {
   });
 });
 
-describe('Parsing Coffee page', () => {
+xdescribe('Parsing Coffee page', () => {
   let html: string;
   let serp: Serp;
 
@@ -587,7 +573,7 @@ describe('Parsing Coffee page', () => {
   });
 });
 
-describe('Parsing Dell page', () => {
+xdescribe('Parsing Dell page', () => {
   let html: string;
   let serp: Serp;
 
@@ -656,7 +642,7 @@ describe('Parsing Dell page', () => {
   });
 });
 
-describe('Parsing no results page', () => {
+xdescribe('Parsing no results page', () => {
   let html: string;
   let serp: Serp;
 

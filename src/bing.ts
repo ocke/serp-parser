@@ -44,10 +44,10 @@ export class BingSERP {
     const $ = this.$;
     const serp = this.serp;
     const CONFIG = {
-      currentPage: 'table.AaVjTc td.YyVfkd',
+      currentPage: '.b_pag .sb_pagS_bp',
       keyword: 'input[aria-label="Search"]',
-      noResults: '.med.card-section p:contains(" - did not match any documents.")',
-      resultText: '#result-stats',
+      noResults: '#b_results li.b_no',
+      resultText: '#b_tween .sb_count',
     };
     if ($(CONFIG.noResults).length === 1) {
       this.serp.error = 'No results page';
@@ -55,7 +55,7 @@ export class BingSERP {
       return;
     }
 
-    if ($('body').hasClass('srp')) {
+    if ($('body').hasClass('b_sbText')) {
       serp.keyword = $(CONFIG.keyword).val();
       serp.totalResults = utils.getTotalResults($(CONFIG.resultText).text());
       serp.currentPage = parseInt($(CONFIG.currentPage).text(), 10);
@@ -65,7 +65,6 @@ export class BingSERP {
       this.getPagination();
       this.getAdwords();
       this.getHotels();
-      serp.timeTaken = utils.getTimeTaken($(CONFIG.resultText).text());
       this.getVideos();
       this.getThumbnails();
       // this.getAvailableOn();
@@ -78,14 +77,15 @@ export class BingSERP {
   private getOrganic() {
     const $ = this.$;
     const CONFIG = {
-      results: '#search .g div .yuRUbf > a',
+      results: '#b_results li.b_algo',
     };
 
     $(CONFIG.results).each((index, element) => {
       const position = index + 1;
-      const url = $(element).prop('href');
+      const link = $(element).find('h2 > a');
+      const url = link.prop('href');
       const domain = utils.getDomain(url);
-      const title = this.elementText(element, 'h3');
+      const title = link.text();
       const snippet = this.getSnippet(element);
       const linkType = utils.getLinkType(url);
       const result: Result = {
@@ -97,7 +97,6 @@ export class BingSERP {
         url,
       };
       this.parseSitelinks(element, result);
-      this.parseCachedAndSimilarUrls(element, result);
       this.serp.organic.push(result);
     });
   }
@@ -169,10 +168,10 @@ export class BingSERP {
     urls.each((i, el) => {
       switch ($(el).text()) {
         case 'Cached':
-          result.cachedUrl = $(el).prop('href');
+          // result.cachedUrl = $(el).prop('href');
           break;
         case 'Similar':
-          result.similarUrl = $(el).prop('href');
+          // result.similarUrl = $(el).prop('href');
           break;
       }
     });
@@ -182,15 +181,11 @@ export class BingSERP {
     const $ = this.$;
     const serp = this.serp;
     const CONFIG = {
-      pages: 'td:not(.b) a.fl',
-      pagination: 'table.AaVjTc',
+      pages: 'li a:not(.sb_pagN)',
+      pagination: 'li.b_pag',
     };
 
     const pagination = $(CONFIG.pagination);
-    serp.pagination.push({
-      page: serp.currentPage,
-      path: '',
-    });
     pagination.find(CONFIG.pages).each((index, element) => {
       serp.pagination.push({
         page: parseInt($(element).text(), 10),
